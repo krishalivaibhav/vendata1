@@ -1,0 +1,800 @@
+Vite
+
+Vite (French for "quick") is a build tool designed to enhance the development experience for modern web projects. It comprises two main components:
+
+Dev Server: Provides advanced features like Hot Module Replacement (HMR) for fast development.
+
+Build Command: Bundles code using Rollup, optimizing assets for production.
+
+Features:
+
+Vite offers sensible defaults and is opinionated.
+Supports frameworks and integration with plugins.
+Can be customized using the Config Section.
+Extensibility:
+
+Vite is highly extensible via Plugin API and JavaScript API with full typing support.
+Browser Support:
+
+During development, Vite targets modern browsers (esnext).
+For production, it targets browsers supporting native ES Modules, with legacy browser support available via plugins.
+Online Experience:
+
+Vite can be tried online on StackBlitz, offering a similar experience to local setups without installation.
+Scaffolding Projects:
+
+Users can scaffold Vite projects using commands like npm create vite@latest.
+Supported templates include JavaScript, TypeScript, and various framework presets.
+Community Support:
+
+Community maintains templates for different frameworks and tools.
+Project Structure:
+
+In Vite projects, index.html serves as the entry point.
+URLs inside index.html are automatically rebased.
+Vite supports multi-page apps with multiple .html entry points.
+CLI and Commands:
+
+Vite provides CLI commands like vite dev for development and vite build for production.
+Using Unreleased Commits:
+
+For testing the latest features, users can clone the Vite repository and link it to their projects.
+
+
+
+
+
+NPM Dependency Handling:
+
+Vite resolves bare module imports and pre-bundles dependencies using esbuild.
+It caches dependency requests for improved performance.
+Hot Module Replacement (HMR):
+
+Vite provides HMR API over native ESM for instant updates without page reload.
+First-party integrations available for Vue Single File Components, React Fast Refresh, and Preact.
+TypeScript Support:
+
+Vite supports importing .ts files by default.
+It only transpiles TypeScript without performing type checking.
+Recommendations for handling type checking separately during development and production builds.
+Compiler Options in tsconfig.json:
+
+Recommendations for configuring isolatedModules and useDefineForClassFields.
+Vue Support:
+
+Vite offers first-class support for Vue with plugins for SFC and JSX.
+JSX Support:
+
+.jsx and .tsx files are supported, with customization options for JSX configuration.
+CSS Handling:
+
+CSS files are injected into the page with HMR support.
+Support for CSS @import inlining and rebasing, with PostCSS integration.
+CSS Modules:
+
+Vite supports CSS Modules via .module.css files, enabling named imports.
+CSS Pre-processors:
+
+Built-in support for .scss, .sass, .less, .styl, and .stylus files.
+Automatic @import alias resolution and URL rebasing.
+Static Assets:
+
+Importing static assets returns resolved public URLs.
+Special queries for custom asset loading behaviors.
+JSON Import:
+
+Direct import and named import support for JSON files.
+Glob Import:
+
+Support for importing multiple modules via import.meta.glob with advanced options.
+Dynamic Import:
+
+Support for dynamic imports with variables.
+WebAssembly Support:
+
+Importing pre-compiled .wasm files with initialization options.
+Automatic inlining or fetching of .wasm files based on size.
+Web Workers:
+
+Importing web worker scripts with constructors or query suffixes for optimized loading.
+Build Optimizations:
+
+Automatic CSS code splitting, preload directives generation, and async chunk loading optimization.
+
+
+
+
+
+
+Command Line Interface
+
+Dev server:
+
+Command: vite
+Description: Start Vite dev server in the current directory.
+Options:
+--host [host]: Specify hostname (string)
+--port <port>: Specify port (number)
+--open [path]: Open browser on startup (boolean | string)
+--cors: Enable CORS (boolean)
+--strictPort: Exit if specified port is already in use (boolean)
+--force: Force the optimizer to ignore the cache and re-bundle (boolean)
+-c, --config <file>: Use specified config file (string)
+--base <path>: Public base path (default: /) (string)
+-l, --logLevel <level>: info | warn | error | silent (string)
+--clearScreen: Allow/disable clear screen when logging (boolean)
+--profile: Start built-in Node.js inspector (check Performance bottlenecks)
+-d, --debug [feat]: Show debug logs (string | boolean)
+-f, --filter <filter>: Filter debug logs (string)
+-m, --mode <mode>: Set env mode (string)
+-h, --help: Display available CLI options
+-v, --version: Display version number
+Build:
+
+Command: vite build
+Description: Build for production.
+Options:
+Same options as the dev server, plus:
+--target <target>: Transpile target (default: "modules") (string)
+--outDir <dir>: Output directory (default: dist) (string)
+--assetsDir <dir>: Directory under outDir to place assets in (default: "assets") (string)
+--assetsInlineLimit <number>: Static asset base64 inline threshold in bytes (default: 4096) (number)
+--ssr [entry]: Build specified entry for server-side rendering (string)
+--sourcemap [output]: Output source maps for build (default: false) (boolean | "inline" | "hidden")
+--minify [minifier]: Enable/disable minification, or specify minifier to use (default: "esbuild") (boolean | "terser" | "esbuild")
+--manifest [name]: Emit build manifest json (boolean | string)
+--ssrManifest [name]: Emit ssr manifest json (boolean | string)
+--emptyOutDir: Force empty outDir when it's outside of root (boolean)
+-w, --watch: Rebuilds when modules have changed on disk (boolean)
+Optimize:
+
+Command: vite optimize
+Description: Pre-bundle dependencies.
+Options:
+Same options as the dev server, plus:
+--force: Force the optimizer to ignore the cache and re-bundle (boolean)
+Preview:
+
+Command: vite preview
+Description: Locally preview the production build. Do not use this as a production server as it's not designed for it.
+Options:
+Same options as the dev server, plus:
+--outDir <dir>: Output directory (default: dist) (string)
+
+
+
+
+
+
+
+Here is the structured data for using plugins in Vite:
+
+Using Plugins
+
+Introduction:
+
+Vite can be extended using plugins, based on Rollup's plugin interface with additional Vite-specific options.
+Users benefit from the mature ecosystem of Rollup plugins while extending dev server and SSR functionality.
+Adding a Plugin:
+
+To use a plugin:
+Add it to devDependencies.
+Include it in the plugins array in vite.config.js.
+Example:
+// vite.config.js
+import legacy from '@vitejs/plugin-legacy'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [
+    legacy({
+      targets: ['defaults', 'not IE 11'],
+    }),
+  ],
+})
+
+Plugins Array:
+
+plugins array accepts:
+Individual plugin objects.
+Presets (multiple plugins as a single element), which are internally flattened.
+Falsy plugins are ignored, useful for activation/deactivation.
+Finding Plugins:
+
+Vite aims for out-of-the-box support for common web development patterns.
+Check Features Guide before searching for plugins.
+Official plugins listed in the Plugins section.
+Community plugins listed in awesome-vite.
+Find plugins with npm search for vite-plugin or rollup-plugin.
+Enforcing Plugin Ordering:
+
+For compatibility with some Rollup plugins, enforce the order of the plugin or apply only at build time.
+Use enforce modifier:
+pre: Before Vite core plugins.
+default: After Vite core plugins.
+post: After Vite build plugins.
+Example:
+// vite.config.js
+import image from '@rollup/plugin-image'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [
+    {
+      ...image(),
+      enforce: 'pre',
+    },
+  ],
+})
+
+
+Conditional Application:
+
+Plugins are invoked by default for both serve and build.
+For conditional application:
+Use the apply property to invoke them only during 'build' or 'serve'.
+Example:
+// vite.config.js
+import typescript2 from 'rollup-plugin-typescript2'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [
+    {
+      ...typescript2(),
+      apply: 'build',
+    },
+  ],
+})
+
+
+
+Dependency Pre-Bundling
+
+Introduction:
+
+Vite prebundles project dependencies before loading the site locally, done automatically and transparently by default.
+Purposes:
+
+CommonJS and UMD compatibility: Convert CommonJS or UMD dependencies into ESM for native ESM serving during development.
+Smart import analysis ensures named imports to CommonJS modules work as expected.
+Performance: Convert ESM dependencies with many internal modules into a single module for improved page load performance.
+Automatic Dependency Discovery:
+
+Vite crawls source code to discover dependency imports for pre-bundling with esbuild.
+If a new dependency import is encountered, Vite re-runs the pre-bundling process and reloads the page if needed.
+Monorepos and Linked Dependencies:
+
+Detects dependencies not resolved from node_modules, treats linked dependencies as source code, and analyzes their dependency list.
+Linked dependencies must be exported as ESM or added to optimizeDeps.include and build.commonjsOptions.include in the config.
+Customizing the Behavior:
+
+Use optimizeDeps.include or optimizeDeps.exclude to explicitly include/exclude dependencies from the list.
+Customize esbuild with optimizeDeps.esbuildOptions for special files handling or changing the build target.
+Caching:
+
+File System Cache:
+Vite caches pre-bundled dependencies in node_modules/.vite, determining re-bundling based on lockfile content, patches folder modification time, config fields, and NODE_ENV.
+Re-run pre-bundling by starting dev server with --force or manually deleting the cache directory.
+Browser Cache:
+Resolved dependency requests are strongly cached with HTTP headers max-age=31536000,immutable.
+Requests auto-invalidated by version query in lockfile.
+To debug dependencies with local edits:
+Temporarily disable cache via browser devtools Network tab.
+Restart Vite dev server with --force flag.
+Reload the page.
+
+
+
+
+
+Static Asset Handling
+
+Importing Asset as URL:
+
+Importing a static asset returns the resolved public URL when served.
+URLs are based on project root during development and get hashed in the production build.
+CSS url() references are handled similarly.
+Vue SFC templates automatically convert asset references into imports.
+Common image, media, and font filetypes are automatically detected as assets.
+Assets smaller than assetsInlineLimit are inlined as base64 data URLs.
+Explicit URL Imports:
+
+Assets not included in the internal list or assetsInclude can be explicitly imported as a URL using the ?url suffix.
+Useful for importing Houdini Paint Worklets.
+Importing Asset as String:
+
+Assets can be imported as strings using the ?raw suffix.
+Importing Script as a Worker:
+
+Scripts can be imported as web workers with the ?worker or ?sharedworker suffix.
+Inlined as base64 strings with ?worker&inline.
+The public Directory:
+
+Special directory under project root for assets never referenced in source code or needing to retain exact filenames.
+Defaults to <root>/public but configurable with publicDir option.
+Always reference public assets using root absolute path (e.g., /icon.png).
+Public assets cannot be imported from JavaScript.
+new URL(url, import.meta.url):
+
+Native ESM feature to obtain the full, resolved URL of a static asset using relative path from a JavaScript module.
+Supports dynamic URLs via template literals.
+Vite performs necessary transforms during the production build to ensure correct URL pointing.
+
+
+Building for Production
+
+Running vite build:
+
+Use vite build command to deploy the app for production.
+Default build entry point: <root>/index.html.
+Produces an application bundle suitable for static hosting.
+Browser Compatibility:
+
+Production bundle assumes support for modern JavaScript.
+Default targets browsers supporting native ES Modules, dynamic import, and import.meta.
+Custom targets can be specified via build.target config option.
+Public Base Path:
+
+Specify base path via base config option for nested public paths.
+All asset paths automatically adjusted during build.
+Use import.meta.env.BASE_URL for dynamic URL concatenation.
+Customizing the Build:
+
+Customize build via various build config options.
+Adjust underlying Rollup options via build.rollupOptions.
+Chunking Strategy:
+
+Configure chunk splitting using build.rollupOptions.output.manualChunks.
+Default chunking strategy or splitVendorChunkPlugin for legacy support.
+Load Error Handling:
+
+vite:preloadError event emitted when dynamic import fails.
+Use event handler to handle preload errors and prevent throwing.
+Rebuild on File Changes:
+
+Enable Rollup watcher with vite build --watch.
+Adjust watcher options via build.watch config.
+Multi-Page App:
+
+Specify multiple .html files as entry points for multi-page apps.
+Configure input paths in rollupOptions.input.
+Library Mode:
+
+Use build.lib config option for building browser-oriented libraries.
+Externalize dependencies not to be bundled into the library.
+File Extensions:
+
+Different file extensions generated for Node.js compatibility if "type": "module" not present in package.json.
+Environment Variables:
+
+Statically replace import.meta.env.* usage during production build.
+process.env.* usage not replaced for dynamic changes by consumers.
+Advanced Base Options:
+
+Experimental support for advanced base options during build.
+Use experimental.renderBuiltUrl for customizing built URL rendering.
+
+
+
+Deploying a Static Site
+
+Building the App:
+
+Run npm run build command to build the app.
+Default build output location: dist.
+Deploy the dist folder to preferred platforms.
+Testing the App Locally:
+
+After building the app, test it locally with npm run preview command.
+vite preview serves files from dist at http://localhost:4173.
+Configure port using --port flag.
+GitHub Pages:
+
+Set base in vite.config.js.
+Configure GitHub Pages deployment workflow in repository settings.
+Sample GitHub Actions workflow provided for building and deploying.
+GitLab Pages and GitLab CI:
+
+Set base in vite.config.js.
+Create .gitlab-ci.yml for building and deploying site on GitLab Pages.
+Netlify:
+
+Deploy using Netlify CLI or via Git.
+CLI commands for installation, initialization, and deployment provided.
+Vercel:
+
+Deploy using Vercel CLI or via Git integration.
+CLI commands for installation, initialization, and deployment provided.
+Cloudflare Pages:
+
+Deploy using Wrangler CLI or via Git integration.
+CLI commands for installation, login, build, and deployment provided.
+Google Firebase:
+
+Configure firebase.json and .firebaserc.
+Deploy using firebase deploy command.
+Surge:
+
+Install Surge CLI.
+Build and deploy using surge dist command.
+Custom domain deployment also supported.
+Azure Static Web Apps:
+
+Deploy using Microsoft Azure Static Web Apps service.
+Requires Azure account, subscription key, and SWA Extension in Visual Studio Code.
+Steps for deployment via VS Code extension provided.
+
+Render:
+Deploy as a Static Site on Render platform.
+Steps for creating a Render account, connecting to GitHub/GitLab, and specifying build settings provided.
+
+
+
+Built-in Variables:
+
+import.meta.env.MODE: {string} the mode the app is running in.
+import.meta.env.BASE_URL: {string} the base URL the app is served from.
+import.meta.env.PROD: {boolean} indicates if the app is running in production.
+import.meta.env.DEV: {boolean} indicates if the app is running in development.
+import.meta.env.SSR: {boolean} indicates if the app is running in the server.
+.env Files:
+
+Vite loads environment variables from .env, .env.local, .env.[mode], and .env.[mode].local files.
+.env.[mode] files take priority over generic ones.
+Environment variables existing before Vite execution have the highest priority.
+Loaded variables are exposed to client source code via import.meta.env.
+Security Notes:
+
+.env.*.local files are local-only and should contain sensitive variables.
+Only variables prefixed with VITE_ are exposed to Vite-processed code.
+Avoid sensitive information in VITE_* variables.
+Env Parsing:
+
+Environment variables are exposed as strings in import.meta.env.
+dotenv-expand is used for variable expansion.
+Use \ to escape $ in environment values.
+IntelliSense for TypeScript:
+
+Augment ImportMetaEnv in vite-env.d.ts for TypeScript IntelliSense.
+Update lib field in tsconfig.json for browser environment types.
+HTML Env Replacement:
+
+Replace env variables in HTML files using %ENV_NAME% syntax.
+Absent env variables are ignored in HTML replacement.
+Modes:
+
+Dev server runs in development mode, build command runs in production mode by default.
+Override default mode with --mode flag.
+Differentiate between NODE_ENV and modes; they are distinct concepts.
+Command and Mode Mapping:
+
+Different commands affect NODE_ENV and mode differently.
+Corresponding values for NODE_ENV and mode are determined by command and mode options.
+NODE_ENV in .env Files:
+
+NODE_ENV can be set in .env files, with modes controlling its value.
+NODE_ENV and modes remain distinct concepts, providing different benefits.
+
+
+
+SSR refers to running front-end frameworks in Node.js, pre-rendering to HTML, and hydrating on the client.
+Vite focuses on SSR integration with front-end frameworks, not traditional server-side frameworks.
+Low-level API:
+
+Vite offers a low-level API for SSR, suitable for library and framework authors.
+Example SSR setups are available for various frameworks within create-vite-extra.
+Source Structure:
+
+Typical SSR application structure includes index.html, server.js, and src directory with main.js, entry-client.js, and entry-server.js.
+Conditional Logic:
+
+Use import.meta.env.SSR for conditional logic based on SSR vs. client.
+Setting Up the Dev Server:
+
+Use Vite in middleware mode for full control over the main server.
+Example integration with Express is provided.
+Building for Production:
+
+Produce client and SSR builds separately.
+Production scripts specify SSR entry and use client and SSR builds accordingly.
+Generating Preload Directives:
+
+Use --ssrManifest flag to generate SSR manifest for client build.
+Leverage manifest for rendering preload directives for async routes.
+Pre-Rendering / SSG:
+
+Pre-render known routes and data into static HTML, akin to Static-Site Generation (SSG).
+SSR Externals:
+
+Dependencies are externalized by default for SSR.
+Use ssr.noExternal to handle dependencies needing transformation by Vite's pipeline.
+Working with Aliases:
+
+Configure aliases to alias actual node_modules packages for SSR externalized dependencies.
+SSR-specific Plugin Logic:
+
+Hooks like resolveId, load, and transform receive an additional ssr property in the options object.
+SSR Target:
+
+SSR build target defaults to a Node environment but can be set to a Web Worker environment.
+SSR Bundle:
+
+Bundle SSR build into a single JavaScript file by setting ssr.noExternal to true.
+
+
+
+
+Note on Backend Integration:
+
+If using a traditional backend but Vite for serving assets, check existing integrations or configure manually.
+Configure Vite entry and enable build manifest in vite.config.js.
+Development Setup:
+
+Inject @vite/client and main.js script tags in server's HTML template for development.
+Ensure proper asset serving by proxying static asset requests to Vite server or setting server.origin.
+React Integration:
+
+For React with @vitejs/plugin-react, include additional script to inject refresh runtime.
+Production Setup:
+
+After running vite build, a .vite/manifest.json file is generated containing asset information.
+Manifest structure includes entry and non-entry chunks with static and dynamic imports, CSS, and asset files.
+Using Manifest in Production:
+
+Utilize manifest to render links or preload directives with hashed filenames for CSS and JavaScript assets.
+
+
+Backend Integration with Vite
+
+Configuration in Vite:
+// vite.config.js
+export default defineConfig({
+  build: {
+    // generate .vite/manifest.json in outDir
+    manifest: true,
+    rollupOptions: {
+      // overwrite default .html entry
+      input: '/path/to/main.js',
+    },
+  },
+})
+
+Module Preload Polyfill:
+// Add at the beginning of your app entry
+import 'vite/modulepreload-polyfill'
+
+
+Development Setup:
+<!-- Inject in your server's HTML template for development -->
+<!-- if development -->
+<script type="module" src="http://localhost:5173/@vite/client"></script>
+<script type="module" src="http://localhost:5173/main.js"></script>
+
+
+Serving Assets Options:
+
+Proxy static assets requests to the Vite server.
+Set server.origin to resolve generated asset URLs using the backend server URL.
+React Integration (if applicable):
+
+<!-- Add before the above scripts for React with @vitejs/plugin-react -->
+<script type="module">
+  import RefreshRuntime from 'http://localhost:5173/@react-refresh'
+  RefreshRuntime.injectIntoGlobalHook(window)
+  window.$RefreshReg$ = () => {}
+  window.$RefreshSig$ = () => (type) => type
+  window.__vite_plugin_react_preamble_installed__ = true
+</script>
+
+
+Production Setup:
+
+After running vite build, a .vite/manifest.json file is generated alongside other asset files.
+Manifest structure includes entry and non-entry chunks with static and dynamic imports, CSS, and asset files.
+Using Manifest in Production:
+
+<!-- Utilize manifest for links or preload directives with hashed filenames -->
+<!-- if production -->
+<link rel="stylesheet" href="/assets/{{ manifest['main.js'].css }}" />
+<script type="module" src="/assets/{{ manifest['main.js'].file }}"></script>
+
+
+Comparisons: Vite vs. Other Tools
+
+1. WMR (Webpack Module Replacement)
+
+Feature Set: WMR provides a similar feature set to Vite.
+Main Use Case: Designed primarily for Preact projects.
+Integrated Features: Offers more integrated features such as pre-rendering.
+Scope: Closer to a Preact meta framework, emphasizing compact size.
+Fine-Tuned Experience: If using Preact, WMR offers a more fine-tuned experience.
+2. @web/dev-server (formerly es-dev-server)
+
+Inspiration: Vite 1.0's Koa-based server setup was inspired by @web/dev-server.
+Scope: Lower-level compared to Vite.
+Framework Integrations: Does not provide official framework integrations.
+Manual Setup: Requires manual setting up of a Rollup configuration for production build.
+@web Umbrella Project: Contains many other excellent tools that may benefit Vite users.
+3. Snowpack
+
+No-Bundle Native ESM Dev Server: Similar in scope to Vite.
+Current Status: No longer being maintained; Snowpack team now working on Astro, a static site builder powered by Vite.
+Technical Advantages: Shared many technical advantages over traditional tooling.
+Dependency Pre-Bundling: Vite's dependency pre-bundling inspired by Snowpack v1 (now esinstall).
+Implementation Differences: Aside from implementation details, both projects offered similar technical advantages.
+Differences: Detailed differences between the two projects are listed in the v2 Comparisons Guide.
+
+
+
+Troubleshooting Guide
+
+CJS (CommonJS)
+
+Issue: Vite CJS Node API deprecated.
+Solution:
+Update files or frameworks to import the ESM build of Vite.
+Ensure vite.config.js uses ESM syntax.
+Set "type": "module" in the nearest package.json, or use .mjs/.mts extension for config files.
+CLI
+
+Error: Cannot find module 'C:\foo\bar&baz\vite\bin\vite.js'.
+Solution: Remove '&' from the project path or switch to another package manager.
+Config
+
+Error: This package is ESM only.
+Solution: Convert config to ESM by setting "type": "module" or renaming config files to .mjs/.mts.
+Dev Server
+
+Issue: Requests are stalled forever.
+Solution: Increase file descriptor and inotify limits or add DefaultLimitNOFILE=65536 to config files.
+Network Requests
+
+Issue: Requests stop loading.
+Solution: Use a trusted SSL cert to resolve cache problems.
+macOS
+
+Solution: Install a trusted cert via CLI or Keychain Access app.
+Build
+
+Error: Built file does not work due to CORS error.
+Solution: Access the file with HTTP protocol, not file protocol.
+HMR (Hot Module Replacement)
+
+Issue: Vite detects a file change but HMR is not working.
+Solution: Check for case sensitivity in file imports.
+Performance
+
+Issue: Performance bottlenecks.
+Solution: Use Node.js inspector to create CPU profiles and identify bottlenecks.
+Others
+
+Issue: Module externalized for browser compatibility.
+
+Solution: Avoid Node.js modules for browser code or add polyfills manually.
+
+Issue: Syntax Error / Type Error happens.
+
+Solution: Vite does not support non-strict mode code; use patch-package for dependencies.
+
+Issue: Browser extensions prevent Vite client requests.
+
+Solution: Disable extensions like ad-blockers if requests are blocked.
+
+
+
+Performance Guide
+
+Browser Setup
+Issue: Some browser extensions may interfere with requests and slow down startup and reload times for large apps.
+Solution:
+Create a dev-only profile without extensions or switch to incognito mode while using Vite's dev server.
+Ensure "Disable Cache" isn't enabled while working with the Vite server.
+Audit Configured Vite Plugins
+
+Issue: Community plugins' performance may affect the developer experience.
+Solution:
+Dynamically import large dependencies used in certain cases to reduce Node.js startup time.
+Avoid long and extensive operations in hooks like buildStart, config, and configResolved.
+Optimize resolveId, load, and transform hooks to minimize file loading time.
+
+Profiling
+Solution: Use vite --profile to record a .cpuprofile, then inspect it with tools like speedscope to identify bottlenecks.
+
+Reduce Resolve Operations
+Issue: Resolving import paths can be expensive.
+Solution: Be explicit with import paths to reduce filesystem checks.
+
+TypeScript
+Solution: Enable "moduleResolution": "bundler" and "allowImportingTsExtensions": true in tsconfig.json to use .ts and .tsx extensions directly.
+
+Avoid Barrel Files
+Issue: Barrel files may result in slower page loads due to unnecessary file fetching and transformation.
+Solution: Avoid barrel files and import individual APIs directly.
+
+Warm Up Frequently Used Files
+Solution: Use the server.warmup option to warm up frequently used files and reduce request waterfalls.
+
+Use Lesser or Native Tooling
+Solution: Reduce the amount of work for source files and consider using native tooling for larger applications.
+
+
+Project Philosophy
+
+Lean Extendable Core
+
+Objective: Vite aims to support common patterns for building Web apps with a lean core.
+Approach:
+Features implemented as external plugins instead of core additions.
+Collaboration with the Rollup project for plugin compatibility.
+Example: vite-plugin-pwa demonstrates extending Vite's core functionality.
+Pushing the Modern Web
+
+Objective: Vite promotes modern coding practices.
+Features:
+Source code must be in ESM.
+Encouragement of using new Worker syntax for web workers.
+Restriction on using Node.js modules in the browser.
+Future-Proof API: New features follow modern patterns for longevity.
+A Pragmatic Approach to Performance
+
+Focus: Performance optimization since inception.
+Architecture:
+Fast HMR even as projects scale.
+Native tools like esbuild and SWC for intensive tasks.
+Babel usage by framework plugins for user code compilation.
+Rollup for balancing bundle size and ecosystem plugin availability.
+Evolution: Adoption of new libraries for DX improvement while maintaining API stability.
+Building Frameworks on top of Vite
+
+Utility: Vite excels as a framework creation tool.
+Features:
+Framework agnostic core with polished plugins for UI frameworks.
+JS API for framework authors to tailor experiences.
+Support for SSR primitives and cross-framework sharing via plugins.
+Compatibility: Ideal for pairing with Backend frameworks like Ruby and Laravel.
+An Active Ecosystem
+
+Collaboration: Evolution through cooperation with maintainers, users, and the Vite team.
+Participation: Active involvement in Vite's core development encouraged.
+Regression Minimization: Close collaboration with ecosystem projects to minimize regressions.
+Communication: Invitation for involvement through Vite's Discord community.
+
+
+
+
+Migration from Vite v4
+
+Node.js Support
+
+Changes:
+Deprecated support for Node.js versions 14, 16, 17, and 19.
+Requirement of Node.js version 18 or 20+.
+Reasoning: EOL status reached for unsupported Node.js versions.
+Rollup 4
+
+Updates:
+Transition to Rollup 4.
+Notable changes include renaming import assertions to import attributes and discontinuation of Acorn plugins.
+Default setting changes for Vite plugins like this.resolve skipSelf option.
+Action Required: Adjust configurations and plugins accordingly.
+
+Deprecate CJS Node API
+Change: Deprecation of CommonJS Node API in Vite.
+Action Required: Update usage to import the ESM build of Vite instead.
+
+Rework define and import.meta.env. replacement strategy*
+Change: Alignment of dev and build strategies for define and import.meta.env.* features.
+Impact: Ensures consistency between dev and build environments.
+Action Required: Adapt code to handle replacements consistently.
+
+General Changes
+Various changes: CLI shortcuts, resolvePackageEntry and resolvePackageData APIs removal, etc.
+Action Required: Adjust codebases and plugins accordingly.
+
+Advanced
+Internal changes: Refactoring, fixations, and updates aimed at tool and plugin creators.
+Action Required: Review and adjust tool/plugin codebases as necessary.
+
+
+
